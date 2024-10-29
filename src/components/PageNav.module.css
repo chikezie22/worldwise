@@ -9,3 +9,15 @@
   display: flex;
   justify-content: space-between;
 }
+
+.nav {
+  background-color: orangered;
+}
+
+.nav :global(.active) {
+  background-color: green;
+}
+
+.active {
+  background-color: aqua;
+}

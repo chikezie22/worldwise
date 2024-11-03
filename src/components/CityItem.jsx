@@ -1,9 +1,10 @@
+import { Link } from "react-router-dom";
 import styles from "./CityItem.module.css";
 
 const flagemojiToPNG = (flag) => {
   // Step 1: Convert the flag emoji into an array of its code points
   const codePoints = Array.from(flag).map((codeUnit) => codeUnit.codePointAt());
-  console.log(codePoints);
+  //   console.log(codePoints);
 
   // Step 2: Convert code points to corresponding country code letters
   const countryCode = codePoints
@@ -29,14 +30,22 @@ const formatDate = (date) =>
     // weekday: "short",
   }).format(new Date(date));
 function CityItem({ city }) {
-  const { cityName, emoji, date } = city;
+  const {
+    cityName,
+    emoji,
+    date,
+    id,
+    position: { lat, lng },
+  } = city;
 
   return (
-    <li className={styles.cityItem}>
-      <span className={styles.emoji}>{flagemojiToPNG(emoji)}</span>
-      <h3 className={styles.name}>{cityName}</h3>
-      <time className={styles.date}>{formatDate(date)}</time>
-      <button className={styles.deleteBtn}>&times;</button>
+    <li>
+      <Link className={styles.cityItem} to={`${id}?lat=${lat}&lng=${lng}`}>
+        <span className={styles.emoji}>{flagemojiToPNG(emoji)}</span>
+        <h3 className={styles.name}>{cityName}</h3>
+        <time className={styles.date}>{formatDate(date)}</time>
+        <button className={styles.deleteBtn}>&times;</button>
+      </Link>
     </li>
   );
 }

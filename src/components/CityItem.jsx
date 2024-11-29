@@ -1,5 +1,7 @@
+/* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
 import styles from "./CityItem.module.css";
+import { useCities } from "../context/CitiesContext";
 
 const flagemojiToPNG = (flag) => {
   // Step 1: Convert the flag emoji into an array of its code points
@@ -30,6 +32,7 @@ const formatDate = (date) =>
     // weekday: "short",
   }).format(new Date(date));
 function CityItem({ city }) {
+  const { currentCity } = useCities();
   const {
     cityName,
     emoji,
@@ -40,7 +43,12 @@ function CityItem({ city }) {
 
   return (
     <li>
-      <Link className={styles.cityItem} to={`${id}?lat=${lat}&lng=${lng}`}>
+      <Link
+        className={`${styles.cityItem} ${
+          id === currentCity.id ? styles["cityItem--active"] : ""
+        }`}
+        to={`${id}?lat=${lat}&lng=${lng}`}
+      >
         <span className={styles.emoji}>{flagemojiToPNG(emoji)}</span>
         <h3 className={styles.name}>{cityName}</h3>
         <time className={styles.date}>{formatDate(date)}</time>

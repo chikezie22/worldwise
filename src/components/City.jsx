@@ -14,24 +14,20 @@ const formatDate = (date) =>
   }).format(new Date(date));
 
 const flagemojiToPNG = (flag) => {
-  // Step 1: Convert the flag emoji into an array of its code points
-  const codePoints = Array.from(flag).map((codeUnit) => codeUnit.codePointAt());
-  //   console.log(codePoints);
+  // Step 2: Convert the flag emoji into an array of code points
+  const codePoints = Array.from(flag).map((char) => char.codePointAt(0));
 
-  // Step 2: Convert code points to corresponding country code letters
+  // Step 3: Calculate country code letters from code points
   const countryCode = codePoints
-    .map((codePoint) => {
-      // Each regional indicator character's code point minus 127397 gives the ASCII value of the letter
-      const letter = String.fromCharCode(codePoint - 127397);
-      return letter.toLowerCase(); // Convert the letter to lowercase
-    })
-    .join(""); // Join the letters into a string
+    .map((codePoint) => String.fromCharCode(codePoint - 127397)) // Regional indicator math
+    .join("")
+    .toLowerCase();
 
-  // Step 3: Create the image URL using the country code
-  const imageUrl = `https://flagcdn.com/24x18/${countryCode}.png`;
+  // Step 4: Construct the flag image URL
+  const imageUrl = `https://flagcdn.com/w40/${countryCode}.png`; // `w40` for a better image size
 
-  // Step 4: Return the image element with the constructed URL
-  return <img src={imageUrl} alt="flag" />;
+  // Step 5: Return a valid <img> element
+  return <img src={imageUrl} alt={`Flag of ${countryCode}`} />;
 };
 
 function City() {
@@ -52,7 +48,7 @@ function City() {
       <div className={styles.row}>
         <h6>City name</h6>
         <h3>
-          <span>{flagemojiToPNG(emoji)}</span> {cityName}
+          <span>{emoji && flagemojiToPNG(emoji)}</span> {cityName}
         </h3>
       </div>
 

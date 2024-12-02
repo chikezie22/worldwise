@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import styles from "./CityItem.module.css";
 import { useCities } from "../context/CitiesContext";
-import { string } from "prop-types";
+// import { string } from "prop-types";
 
 const flagemojiToPNG = (flag) => {
   // Step 1: Convert the flag emoji into an array of its code points

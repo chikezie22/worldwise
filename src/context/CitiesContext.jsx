@@ -1,49 +1,58 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
+import cityReducer from "../reducer/cityReducer";
 
 const CityContext = createContext();
+
+const initialState = {
+  cities: [],
+  currentCity: {},
+  isLoading: false,
+};
+
 function CityProvider({ children }) {
-  const [cities, setCities] = useState([]);
-  const [isLoading, setIsLoading] = useState([]);
-  const [currentCity, setCurrentCity] = useState({});
+  const [{ cities, currentCity, isLoading }, dispatch] = useReducer(
+    cityReducer,
+    initialState
+  );
+  // const [cities, setCities] = useState([]);
+  // const [isLoading, setIsLoading] = useState([]);
+  // const [currentCity, setCurrentCity] = useState({});
   const BASE_URL = `http://localhost:8000`;
   useEffect(() => {
     const fetchCities = async () => {
-      setIsLoading(true);
+      dispatch({ type: "loading" });
       const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
       try {
         await delay(500);
         const res = await fetch(`${BASE_URL}/cities`);
         const data = await res.json();
-        console.log(data);
-        setCities(data);
-      } catch (error) {
-        alert(`Something went wrong getting data, ${error}`);
-      } finally {
-        setIsLoading(false);
+        dispatch({ type: "cities/loaded", payload: data });
+      } catch {
+        dispatch({ type: "rejected", payload: "Failed to fetch cities" });
       }
     };
     fetchCities();
   }, [BASE_URL]);
 
   const getCity = async (id) => {
-    setIsLoading(true);
+    dispatch({ type: "loading" });
+    console.log(id, currentCity.id, currentCity);
+    if (Number(id) === currentCity.id) return;
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     try {
       await delay(500);
       const res = await fetch(`${BASE_URL}/cities/${id}`);
       const data = await res.json();
-      setCurrentCity(data);
-    } catch (error) {
-      alert(`Something went wrong getting data, ${error}`);
-    } finally {
-      setIsLoading(false);
+      dispatch({ type: "city/loaded", payload: data });
+    } catch {
+      dispatch({ type: "rejected", payload: "Failed to get city" });
     }
   };
 
   const createCity = async (newCity) => {
-    setIsLoading(true);
+    dispatch({ type: "loading" });
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     try {
       await delay(500);
@@ -55,16 +64,14 @@ function CityProvider({ children }) {
         },
       });
       const data = await res.json();
-      setCities((cities) => [...cities, data]);
-    } catch (error) {
-      alert(`Something went wrong getting data, ${error}`);
-    } finally {
-      setIsLoading(false);
+      dispatch({ type: "city/created", payload: data });
+    } catch {
+      dispatch({ type: "rejected", payload: "Failed to create city" });
     }
   };
 
   const deleteCity = async (id) => {
-    setIsLoading(true);
+    dispatch({ type: "loading" });
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     try {
       await delay(300);
@@ -77,11 +84,9 @@ function CityProvider({ children }) {
       });
       if (!res.ok) throw new Error("Object could not be deleted");
 
-      setCities((cities) => cities.filter((city) => city.id !== id));
-    } catch (error) {
-      alert(`${error}`);
-    } finally {
-      setIsLoading(false);
+      dispatch({ type: "city/deleted", payload: id });
+    } catch {
+      dispatch({ type: "rejected", payload: "Failed to delete city" });
     }
   };
 

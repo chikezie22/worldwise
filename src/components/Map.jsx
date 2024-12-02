@@ -84,7 +84,9 @@ function DetectClick() {
 }
 
 ChangeCenter.propTypes = {
-  position: PropTypes.arrayOf(PropTypes.number || PropTypes.string).isRequired,
+  position: PropTypes.arrayOf(
+    PropTypes.number || PropTypes.string || PropTypes.array
+  ).isRequired,
 };
 
 export default Map;

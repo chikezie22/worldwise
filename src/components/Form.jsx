@@ -1,24 +1,69 @@
 // "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=0&longitude=0"
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "./Button";
 import styles from "./Form.module.css";
 import { useNavigate } from "react-router-dom";
+import { useUrlPosition } from "../hooks/useUrlPosition";
+import Spinner from "./Spinner";
+import Message from "./Message";
 
-export function convertToEmoji(countryCode) {
-  const codePoints = countryCode
-    .toUpperCase()
-    .split("")
-    .map((char) => 127397 + char.charCodeAt());
-  return String.fromCodePoint(...codePoints);
-}
+// export function convertToEmoji(countryCode) {
+//   const codePoints = countryCode
+//     .toUpperCase()
+//     .split("")
+//     .map((char) => 127397 + char.charCodeAt());
+//   return String.fromCodePoint(...codePoints);
+// }
+
+export const flagemojiToPNG = (flag) => {
+  const countryFlag = flag.toLowerCase();
+
+  return (
+    <img src={`https://flagcdn.com/24x18/${countryFlag}.png`} alt="flag" />
+  );
+};
+
+const BASE_URL = `https://api.bigdatacloud.net/data/reverse-geocode-client`;
 
 function Form() {
+  const navigate = useNavigate();
   const [cityName, setCityName] = useState("");
   const [country, setCountry] = useState("");
   const [date, setDate] = useState(new Date());
   const [notes, setNotes] = useState("");
-  const navigate = useNavigate();
+  const [isLoadingGeoLocation, setIsLoadingGeoLocation] = useState(false);
+  const [emoji, setEmoji] = useState("");
+  const [lat, lng] = useUrlPosition();
+  const [errorGeoLocation, setErrorGeoLocation] = useState("");
+
+  // using a useEffect to render the form data and also set state
+  useEffect(() => {
+    const fetchCityData = async () => {
+      try {
+        setIsLoadingGeoLocation(true);
+        const response = await fetch(
+          `${BASE_URL}?latitude=${lat}&longitude=${lng}`
+        );
+        const data = await response.json();
+        const { city, locality, countryName, countryCode } = data;
+        if (!countryName)
+          throw new Error("Please click on the area with land Mass.");
+        setCityName(city || locality);
+        setEmoji(flagemojiToPNG(countryCode));
+        console.log(data);
+      } catch (err) {
+        setErrorGeoLocation(err.message);
+      } finally {
+        setIsLoadingGeoLocation(false);
+      }
+    };
+    fetchCityData();
+  }, [lat, lng]);
+
+  if (isLoadingGeoLocation) return <Spinner />;
+
+  if (errorGeoLocation) return <Message message={errorGeoLocation} />;
 
   return (
     <form className={styles.form}>
@@ -29,7 +74,7 @@ function Form() {
           onChange={(e) => setCityName(e.target.value)}
           value={cityName}
         />
-        {/* <span className={styles.flag}>{emoji}</span> */}
+        <span className={styles.flag}>{emoji}</span>
       </div>
 
       <div className={styles.row}>

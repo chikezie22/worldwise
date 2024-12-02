@@ -5,20 +5,22 @@ import Button from "./Button";
 import styles from "./Form.module.css";
 import { useNavigate } from "react-router-dom";
 import { useUrlPosition } from "../hooks/useUrlPosition";
+import DatePicker from "react-datepicker";
 import Spinner from "./Spinner";
 import Message from "./Message";
+import "react-datepicker/dist/react-datepicker.css";
+import { useCities } from "../context/CitiesContext";
 
-// export function convertToEmoji(countryCode) {
-//   const codePoints = countryCode
-//     .toUpperCase()
-//     .split("")
-//     .map((char) => 127397 + char.charCodeAt());
-//   return String.fromCodePoint(...codePoints);
-// }
+export function convertToEmoji(countryCode) {
+  const codePoints = countryCode
+    .toUpperCase()
+    .split("")
+    .map((char) => 127397 + char.charCodeAt());
+  return String.fromCodePoint(...codePoints);
+}
 
 export const flagemojiToPNG = (flag) => {
   const countryFlag = flag.toLowerCase();
-
   return (
     <img src={`https://flagcdn.com/24x18/${countryFlag}.png`} alt="flag" />
   );
@@ -34,8 +36,10 @@ function Form() {
   const [notes, setNotes] = useState("");
   const [isLoadingGeoLocation, setIsLoadingGeoLocation] = useState(false);
   const [emoji, setEmoji] = useState("");
+  const [emj, setEmj] = useState("");
   const [lat, lng] = useUrlPosition();
   const [errorGeoLocation, setErrorGeoLocation] = useState("");
+  const { createCity, isLoading } = useCities();
 
   // using a useEffect to render the form data and also set state
   useEffect(() => {
@@ -52,6 +56,7 @@ function Form() {
           throw new Error("Please click on the area with land Mass.");
         setCityName(city || locality);
         setEmoji(flagemojiToPNG(countryCode));
+        setEmj(convertToEmoji(countryCode));
         console.log(data);
       } catch (err) {
         setErrorGeoLocation(err.message);
@@ -69,8 +74,32 @@ function Form() {
 
   if (errorGeoLocation) return <Message message={errorGeoLocation} />;
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!cityName || !date) return;
+    const newCity = {
+      cityName,
+      country,
+      emoji: emj,
+      date,
+      notes,
+      position: {
+        lat,
+        lng,
+      },
+    };
+
+    await createCity(newCity);
+    navigate("/app");
+
+    console.log(newCity);
+  };
+
   return (
-    <form className={styles.form}>
+    <form
+      className={`${styles.form} ${isLoading ? styles["loading"] : ""}`}
+      onSubmit={handleSubmit}
+    >
       <div className={styles.row}>
         <label htmlFor="cityName">City name</label>
         <input
@@ -83,10 +112,17 @@ function Form() {
 
       <div className={styles.row}>
         <label htmlFor="date">When did you go to {cityName}?</label>
-        <input
+        {/* <input
           id="date"
           onChange={(e) => setDate(e.target.value)}
           value={date}
+        /> */}
+        {/* using Date Picker */}
+        <DatePicker
+          showIcon
+          selected={date}
+          onChange={(date) => setDate(date)}
+          className={styles.customDatepicker}
         />
       </div>
 

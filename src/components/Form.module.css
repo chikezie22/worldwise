@@ -11,6 +11,7 @@
 .row {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 0.5rem;
   position: relative;
 }
@@ -36,6 +37,11 @@
   background-color: var(--color-light--1);
   border: 1px solid var(--color-light--1);
   color: var(--color-dark--0);
+}
+
+.customDatepicker {
+  display: flex;
+  align-items: center;
 }
 
 :global(.react-datepicker) {

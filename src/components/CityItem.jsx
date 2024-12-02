@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import styles from "./CityItem.module.css";
 import { useCities } from "../context/CitiesContext";
+import { string } from "prop-types";
 
 const flagemojiToPNG = (flag) => {
   // Step 1: Convert the flag emoji into an array of its code points
@@ -23,6 +24,14 @@ const flagemojiToPNG = (flag) => {
   // Step 4: Return the image element with the constructed URL
   return <img src={imageUrl} alt="flag" />;
 };
+
+// export const flagemoji = (flag) => {
+//   if (typeof flag !== string) return;
+//   const countryFlag = flag.toLowerCase();
+//   return (
+//     <img src={`https://flagcdn.com/24x18/${countryFlag}.png`} alt="flag" />
+//   );
+// };
 
 const formatDate = (date) =>
   new Intl.DateTimeFormat("en", {

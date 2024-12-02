@@ -60,7 +60,6 @@
       },
       "id": 17806733
     },
-
     {
       "cityName": "Calabar",
       "country": "Nigeria",
@@ -72,6 +71,19 @@
         "lng": 8.3417
       },
       "id": 17806700
+    },
+
+    {
+      "id": "ab9c",
+      "cityName": "Rejaumont",
+      "country": "",
+      "emoji": "🇫🇷",
+      "date": "2024-12-02T13:39:31.857Z",
+      "notes": "This is Rejaumont",
+      "position": {
+        "lat": "43.803040614065964",
+        "lng": "0.5460091159250746"
+      }
     }
   ]
 }

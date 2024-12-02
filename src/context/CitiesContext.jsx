@@ -63,9 +63,38 @@ function CityProvider({ children }) {
     }
   };
 
+  const deleteCity = async (id) => {
+    setIsLoading(true);
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    try {
+      await delay(300);
+      const res = await fetch(`${BASE_URL}/cities/${id}`, {
+        method: "DELETE",
+        body: null,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!res.ok) throw new Error("Object could not be deleted");
+
+      setCities((cities) => cities.filter((city) => city.id !== id));
+    } catch (error) {
+      alert(`${error}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <CityContext.Provider
-      value={{ cities, isLoading, currentCity, getCity, createCity }}
+      value={{
+        cities,
+        isLoading,
+        currentCity,
+        getCity,
+        createCity,
+        deleteCity,
+      }}
     >
       {children}
     </CityContext.Provider>

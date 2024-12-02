@@ -41,7 +41,7 @@ const formatDate = (date) =>
     // weekday: "short",
   }).format(new Date(date));
 function CityItem({ city }) {
-  const { currentCity } = useCities();
+  const { currentCity, deleteCity } = useCities();
   const {
     cityName,
     emoji,
@@ -61,7 +61,16 @@ function CityItem({ city }) {
         <span className={styles.emoji}>{flagemojiToPNG(emoji)}</span>
         <h3 className={styles.name}>{cityName}</h3>
         <time className={styles.date}>{formatDate(date)}</time>
-        <button className={styles.deleteBtn}>&times;</button>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            deleteCity(id);
+          }}
+          className={styles.deleteBtn}
+        >
+          &times;
+        </button>
       </Link>
     </li>
   );

@@ -39,6 +39,7 @@ function Form() {
 
   // using a useEffect to render the form data and also set state
   useEffect(() => {
+    if (!lat && !lng) return;
     const fetchCityData = async () => {
       try {
         setIsLoadingGeoLocation(true);
@@ -62,6 +63,9 @@ function Form() {
   }, [lat, lng]);
 
   if (isLoadingGeoLocation) return <Spinner />;
+
+  if (!lat && !lng)
+    return <Message message={"Start by clicking somewhere on the map"} />;
 
   if (errorGeoLocation) return <Message message={errorGeoLocation} />;
 

@@ -85,7 +85,7 @@ function DetectClick() {
 
 ChangeCenter.propTypes = {
   position: PropTypes.arrayOf(
-    PropTypes.number || PropTypes.string || PropTypes.array
+    PropTypes.oneOfType([PropTypes.number, PropTypes.string, PropTypes.array])
   ).isRequired,
 };
 

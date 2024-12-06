@@ -57,7 +57,7 @@ function Form() {
         setCityName(city || locality);
         setEmoji(flagemojiToPNG(countryCode));
         setEmj(convertToEmoji(countryCode));
-        console.log(data);
+        // console.log(data);
       } catch (err) {
         setErrorGeoLocation(err.message);
       } finally {

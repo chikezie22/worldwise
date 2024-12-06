@@ -1,4 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
+import PropTypes from "prop-types";
 import { createContext, useContext, useReducer } from "react";
 
 const AuthContext = createContext();
@@ -43,17 +44,22 @@ const AuthProvider = ({ children }) => {
     dispatch({ type: "logout" });
   };
   return (
-    <AuthContext.Provider value={{ logout, login, userName, isAuthenticated }}>
+    <AuthContext.Provider
+      value={{ logout, login, userName, isAuthenticated, FAKE_USER }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
-const UseAuth = () => {
+const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined)
     throw new Error("Context is used outside the provider");
   return context;
 };
 
-export { UseAuth, AuthProvider };
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+export { useAuth, AuthProvider };

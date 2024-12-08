@@ -1,6 +1,12 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useEffect, useReducer } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+} from "react";
 import cityReducer from "../reducer/cityReducer";
 
 const CityContext = createContext();
@@ -36,20 +42,23 @@ function CityProvider({ children }) {
     fetchCities();
   }, [BASE_URL]);
 
-  const getCity = async (id) => {
-    dispatch({ type: "loading" });
-    console.log(id, currentCity.id, currentCity);
-    if (Number(id) === currentCity.id) return;
-    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    try {
-      await delay(500);
-      const res = await fetch(`${BASE_URL}/cities/${id}`);
-      const data = await res.json();
-      dispatch({ type: "city/loaded", payload: data });
-    } catch {
-      dispatch({ type: "rejected", payload: "Failed to get city" });
-    }
-  };
+  const getCity = useCallback(
+    async (id) => {
+      dispatch({ type: "loading" });
+      // console.log(id, currentCity.id, currentCity);
+      if (Number(id) === currentCity.id) return;
+      const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      try {
+        await delay(500);
+        const res = await fetch(`${BASE_URL}/cities/${id}`);
+        const data = await res.json();
+        dispatch({ type: "city/loaded", payload: data });
+      } catch {
+        dispatch({ type: "rejected", payload: "Failed to get city" });
+      }
+    },
+    [currentCity.id, BASE_URL]
+  );
 
   const createCity = async (newCity) => {
     dispatch({ type: "loading" });

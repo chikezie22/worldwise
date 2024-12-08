@@ -14,7 +14,7 @@ export default function Login() {
 
   useEffect(() => {
     isAuthenticated ? navigate("/app", { replace: true }) : null;
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate]);
 
   // this path is for handling authentication
   const handleAuthentication = (e) => {
